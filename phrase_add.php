@@ -2,7 +2,7 @@
   
   if(isset($_GET['btn-save'])){
     // save to file
-    $filename = "file.txt"; 
+    include('config.php');
     $text = $_GET['phrase_01'] . " " . $_GET['phrase_02']  . "\n"; 
     $text = urldecode($text);
     file_put_contents($filename, $text, FILE_APPEND);

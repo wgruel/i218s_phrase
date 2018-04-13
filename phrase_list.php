@@ -1,5 +1,5 @@
 <?php 
-  $filename = "file.txt"; 
+  include('config.php');
   $statements = file($filename, FILE_IGNORE_NEW_LINES);
 ?>
 <html>
