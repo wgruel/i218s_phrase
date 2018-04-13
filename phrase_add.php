@@ -6,6 +6,27 @@
     $text = $_GET['phrase_01'] . " " . $_GET['phrase_02']  . "\n"; 
     $text = urldecode($text);
     file_put_contents($filename, $text, FILE_APPEND);
+    if ($mailfun == true){
+      // email related stuff... 
+      if (isset($_GET['email'])){
+        $to      = urldecode($_GET['email']);
+        $subject = 'I say YES! to...';
+        $message = $text;
+        $headers = 'From: internet2@hdmy.de' . "\r\n" .
+            'Reply-To: internet2@hdmy.de' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+        
+        $mailSuccess = mail($to, $subject, $message, $headers);      
+  
+        if (!$mailSuccess){
+          echo "mail not sent";
+        }
+        else {
+          echo "mail sent to: " . $to;
+        }
+      }  
+    }
+
   }
 
 
@@ -44,6 +65,17 @@
                   <option value="to%20be%20brave%20from%20time%20to%20time">to be brave from time to time</option>
                 </select>
               </div>
+              <?php 
+                if ($mailfun == true){
+              ?>
+                <div class="form-group">
+                  <label for="email">Send this message to:</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                </div>    
+              <?php    
+                }
+              ?>
+          
               <div>
                 <button type="submit" class="btn btn-default" name="btn-save" value="1">Say YES!</button>
               </div>      
