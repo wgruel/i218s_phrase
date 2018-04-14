@@ -1,11 +1,34 @@
 <?php 
+  include('config.php');  
   
+  $message = ""; 
+
   if(isset($_GET['btn-save'])){
-    // save to file
-    include('config.php');
+    // save 
     $text = $_GET['phrase_01'] . " " . $_GET['phrase_02']  . "\n"; 
     $text = urldecode($text);
-    file_put_contents($filename, $text, FILE_APPEND);
+
+    $email = ""; 
+    if (isset($_GET['email'])){
+      $email = $_GET['email'];
+    }
+     
+    // create SQL statement
+    $sql_query = "INSERT INTO `phrases`(`id`, `phrase`, `recipient`) ";
+    $sql_query .= "VALUES('','" . $text . "','" . $email . "')";
+
+    // run query
+    mysqli_query($link, $sql_query);
+    $errorText = mysqli_error($link);
+
+    if (!empty($errorText)){
+      $message = $errorText;
+    }
+    else {
+      $message = "Added phrase: " . $text . "\n";
+    }    
+
+
     if ($mailfun == true){
       // email related stuff... 
       if (isset($_GET['email'])){
@@ -19,10 +42,10 @@
         $mailSuccess = mail($to, $subject, $message, $headers);      
   
         if (!$mailSuccess){
-          echo "mail not sent";
+          $message .= "mail not sent";
         }
         else {
-          echo "mail sent to: " . $to;
+          $message .= "mail sent to: " . $to;
         }
       }  
     }
@@ -46,6 +69,13 @@
   <body>
           <div class="jumbotron jumbotron-fluid">
           <div class="container">
+            <?php
+              if ($message != ""){
+                echo "<div class='alert alert-info'>";
+                echo $message;
+                echo "</div>";
+              }
+            ?>          
             <h1 class="display-3">I say YES! to ...</h1>
             <form method="get">
               <div class="select-div">
